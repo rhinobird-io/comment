@@ -2,29 +2,38 @@ FROM debian:8.0
 MAINTAINER wizawu@gmail.com
 
 RUN apt-get update
-RUN apt-get install -y build-essential
+RUN apt-get install -y build-essential wget tar unzip
 
 # Install Redis
-RUN apt-get install -y redis-server
+WORKDIR /opt
+RUN wget http://download.redis.io/redis-stable.tar.gz
+RUN tar xf redis-stable.tar.gz
+
+WORKDIR ./redis-stable
+RUN make MALLOC=libc
+
+RUN mkdir -p /var/data/redis
 
 # Install Nginx with Push Stream Module
 WORKDIR /opt
-
 RUN wget http://nginx.org/download/nginx-1.6.2.tar.gz
-RUN wget https://codeload.github.com/wandenberg/nginx-push-stream-module/zip/0.4.1
+RUN wget https://codeload.github.com/wandenberg/nginx-push-stream-module/zip/0.4.1 -O npsm.zip
 RUN tar xf nginx-*.tar.gz
-RUN unzip nginx-push-stream-module-*.zip
+RUN unzip npsm.zip
 
 WORKDIR ./nginx-1.6.2
+RUN apt-get install -y libpcre3-dev
 RUN ./configure --add-module=../nginx-push-stream-module-0.4.1
 RUN make && make install
-
-COPY ./nginx.conf /usr/local/nginx/conf/nginx.conf
-RUN /usr/local/nginx/sbin/nginx
 
 # Install Gevent
 RUN apt-get install -y python3 python-gevent
 
+# Clean
+WORKDIR /opt
+RUN rm *.tar.gz *.zip
 apt-get clean
 
 EXPOSE 80
+EXPOSE 6379
+EXPOSE 9080
