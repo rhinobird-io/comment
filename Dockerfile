@@ -12,8 +12,6 @@ RUN tar xf redis-stable.tar.gz
 WORKDIR ./redis-stable
 RUN make MALLOC=libc
 
-RUN mkdir -p /var/data/redis
-
 # Install Nginx with Push Stream Module
 WORKDIR /opt
 RUN wget http://nginx.org/download/nginx-1.6.2.tar.gz
@@ -22,18 +20,16 @@ RUN tar xf nginx-*.tar.gz
 RUN unzip npsm.zip
 
 WORKDIR ./nginx-1.6.2
-RUN apt-get install -y libpcre3-dev
+RUN apt-get install -y libpcre3-dev zlib1g-dev libssl-dev
 RUN ./configure --add-module=../nginx-push-stream-module-0.4.1
 RUN make && make install
 
 # Install Gevent
-RUN apt-get install -y python3 python-gevent
+RUN apt-get install -y python3
 
 # Clean
 WORKDIR /opt
 RUN rm *.tar.gz *.zip
 apt-get clean
 
-EXPOSE 80
-EXPOSE 6379
-EXPOSE 9080
+EXPOSE 80 6379 9080
