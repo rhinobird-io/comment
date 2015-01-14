@@ -24,8 +24,8 @@ RUN apt-get install -y libpcre3-dev zlib1g-dev libssl-dev
 RUN ./configure --add-module=../nginx-push-stream-module-0.4.1
 RUN make && make install
 
-# Install Gevent
-RUN apt-get install -y python3
+# Install CherryPy
+RUN apt-get install -y python3 python3-cherrypy3
 
 # Clean
 WORKDIR /opt

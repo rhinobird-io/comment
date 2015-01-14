@@ -7,4 +7,5 @@ fi
 
 docker -d -t -v .:/var/data $1 bash -c "\
     /usr/local/nginx/sbin/nginx -c /var/data/conf/nginx.conf && \
-    /opt/redis-stable/src/redis-server /var/data/conf/redis.conf"
+    /opt/redis-stable/src/redis-server /var/data/conf/redis.conf && \
+    echo start comment plugin"
