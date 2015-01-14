@@ -27,6 +27,9 @@ RUN make && make install
 # Install CherryPy
 RUN apt-get install -y python3 python3-cherrypy3
 
+# Install Redis Client
+RUN apt-get install -y python3-redis
+
 # Clean
 WORKDIR /opt
 RUN rm *.tar.gz *.zip
