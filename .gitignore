@@ -1,0 +1,4 @@
+*.rdb
+*.swp
+*.swo
+opt/*
