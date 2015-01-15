@@ -1,4 +1,5 @@
 *.rdb
 *.swp
 *.swo
+*__pycache__*
 opt/*
