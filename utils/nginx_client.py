@@ -11,3 +11,10 @@ def push(tid, comment):
     conn.request("POST", channel_path, comment, headers)
     response = conn.getresponse()
     return response.status == 200
+
+def is_open(tid):
+    conn = http.client.HTTPConnection(NGINX_HOST)
+    stats_path = "/stats?id=" + tid
+    conn.request("GET", stats_path)
+    response = conn.getresponse()
+    return response.status == 200
