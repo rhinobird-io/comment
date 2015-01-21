@@ -1,0 +1,43 @@
+<link rel="import" href="../components/polymer/polymer.html">
+<link rel="import" href="../components/paper-button/paper-button.html">
+
+<polymer-element name="comment-element" attributes="uid time body">
+  <template>
+    <style>
+      :host {
+        display: flex;
+      }
+      #content {
+        flex-grow: 1;
+      }
+      #time {
+        float: right;
+        color: #666;
+      }
+      #body {
+        width: 100%;
+      }
+    </style>
+    <member-element uid={{uid}}></member-element>
+    <div id="content">
+      <div>
+        <span id="user">{{uid}}</span>
+        <span id="time">{{time}}</span>
+      </div>
+      <p id="body"></p>
+      <div>
+        <paper-button raised on-tap="{{echo}}">Reply</paper-button>
+        <paper-button raised>Delete</paper-button>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      echo: function() {
+        console.log("click")
+      }
+    })
+  </script>
+</polymer-element>
+

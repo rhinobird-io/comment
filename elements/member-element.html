@@ -1,0 +1,25 @@
+<link rel="import" href="../components/polymer/polymer.html">
+
+<polymer-element name="member-element" attributes="uid">
+  <template>
+    <style>
+      img {
+        border-radius: 3px;
+      }
+    </style>
+    <img id="gravatar">
+  </template>
+
+  <script>
+    var md5cache = {
+      "wizawu": "9dce167332fc0177c30bcc13a5f3ee89",
+      "cloudwu": "c4bdfcddb1a82bd027e8bdd6987e607e"
+    }
+    Polymer({
+      ready: function() {
+        var md5 = md5cache[this.uid]
+        this.$.gravatar.src = "http://www.gravatar.com/avatar/" + md5 + "?s=48"
+      }
+    })
+  </script>
+</polymer-element>
