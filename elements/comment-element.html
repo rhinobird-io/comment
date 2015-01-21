@@ -1,43 +1,82 @@
-<link rel="import" href="../components/polymer/polymer.html">
-<link rel="import" href="../components/paper-button/paper-button.html">
+<link rel="import" href="../components/core-ajax/core-xhr.html">
+<link rel="import" href="../components/core-tooltip/core-tooltip.html">
+<link rel="import" href="../components/paper-icon-button/paper-icon-button.html">
 
-<polymer-element name="comment-element" attributes="uid time body">
+<polymer-element name="comment-element" attributes="cid user time body reply">
   <template>
     <style>
-      :host {
+      .comment-wrapper {
         display: flex;
+        padding-top: 2px;
+        border-bottom: 1px solid #ddd;
       }
-      #content {
+      .comment {
         flex-grow: 1;
       }
-      #time {
-        float: right;
-        color: #666;
+      .user {
+        font-size: medium;
+        font-weight: bold;
       }
-      #body {
-        width: 100%;
+      .time {
+        font-size: small;
+        color: #888;
+      }
+      p {
+        margin: 4px 0;
+        font-size: small;
+      }
+      .butt {
+        color: #ddd;
+        padding: 2px;
+        margin-left: -4px;
+        margin-right: 8px;
+      }
+      .butt::shadow #ripple {
+        color: black;
       }
     </style>
-    <member-element uid={{uid}}></member-element>
-    <div id="content">
+
+    <div class="comment-wrapper">
       <div>
-        <span id="user">{{uid}}</span>
-        <span id="time">{{time}}</span>
+        <member-element user={{user}}></member-element>
       </div>
-      <p id="body"></p>
-      <div>
-        <paper-button raised on-tap="{{echo}}">Reply</paper-button>
-        <paper-button raised>Delete</paper-button>
+
+      <div class="comment">
+        <div>
+          <span class="user">{{user}}</span>
+          <core-tooltip label={{time}}>
+            <span class="time">&middot;{{simpleTime}}</span>
+          </core-tooltip>
+        </div>
+
+        <p>{{body}}</p>
+
+        <div>
+          <core-tooltip label="Reply">
+            <paper-icon-button icon="reply" class="butt" on-tap="{{focusInput}}"></paper-icon-button>
+          </core-tooltip>
+          <core-tooltip label="Delete">
+            <paper-icon-button icon="delete" class="butt"></paper-icon-button>
+          </core-tooltip>
+        </div>
       </div>
     </div>
+
+    <core-xhr id="xhr"></core-xhr>
   </template>
 
   <script>
     Polymer({
-      echo: function() {
-        console.log("click")
+      ready: function() {
+        var s = new Date(this.time * 1000).toString();
+        this.time = s.substr(0, 24);
+        this.simpleTime = s.substr(16, 5) + s.substr(3, 7);
+      },
+      focusInput: function() {
+        this.reply(this.user);
+      },
+      deleteComment: function() {
       }
     })
   </script>
 </polymer-element>
-

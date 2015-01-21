@@ -1,0 +1,62 @@
+<link rel="import" href="../components/core-ajax/core-xhr.html">
+<link rel="import" href="../components/core-tooltip/core-tooltip.html">
+<link rel="import" href="../components/paper-input/paper-autogrow-textarea.html">
+<link rel="import" href="../components/paper-icon-button/paper-icon-button.html">
+
+<polymer-element name="thread-element" attributes="tid">
+  <template>
+    <style>
+      .my-comment {
+        display: flex;
+      }
+      paper-autogrow-textarea {
+        flex-grow: 1;
+        margin: 4px 0;
+      }
+      #body {
+        font-family: inherit;
+        padding: 8px;
+        border: 1px solid #ddd;
+        box-sizing: border-box;
+      }
+      core-tooltip {
+        float: right;
+      }
+      .butt {
+        color: #ddd;
+        padding: 2px;
+      }
+      .butt::shadow #ripple {
+        color: black;
+      }
+    </style>
+
+    <div class="comment-list">
+    </div>
+
+    <div class="my-comment">
+      <member-element id="member"></member-element>
+      <paper-autogrow-textarea rows="2">
+        <textarea id="body"></textarea>
+      <paper-autogrow-textarea>
+    </div>
+
+    <div style="margin-bottom: 32px"><core-tooltip label="Comment">
+      <paper-icon-button icon="create" class="butt" on-tap="createComment"></paper-icon-button>
+    </core-tooltip></div>
+
+    <core-xhr id="xhr"></core-xhr>
+  </template>
+
+  <script>
+    Polymer({
+      ready: function() {
+        this.$.member.user = window.location.search.substr(6);
+      },
+      createComment: function() {
+      },
+      focusInput: function() {
+      }
+    })
+  </script>
+</polymer-element>

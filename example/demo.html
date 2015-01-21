@@ -7,13 +7,25 @@
   <title>Comment Plugin</title>
 
   <script src="../components/webcomponentsjs/webcomponents.js"></script>
+  <link rel="import" href="../components/polymer/polymer.html">
   <link rel="import" href="../elements/member-element.html">
   <link rel="import" href="../elements/comment-element.html">
-  <link rel="import" href="../components/paper-input/paper-autogrow-textarea.html">
+  <link rel="import" href="../elements/thread-element.html">
 </head>
 
 <body>
-  <!--thread-element tid="900000000000000001"></thread-element-->
-  <comment-element uid="wizawu" time="Dec 21"></comment-element>
+  <style>
+    body { max-width: 640px; }
+    #header {
+      color: #3F51B5;
+      border-bottom: 2px solid #3F51B5;
+      margin-bottom: 8px;
+    }
+  </style>
+  <h3 id="header">Comments</h3>
+  <div>
+    <thread-element tid="900000000000000001"></thread-element>
+    <comment-element user="wizawu" time="1421942321" body="Hello"></comment-element>
+  </div>
 </body>
 </html>

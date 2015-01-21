@@ -1,10 +1,9 @@
-<link rel="import" href="../components/polymer/polymer.html">
-
-<polymer-element name="member-element" attributes="uid">
+<polymer-element name="member-element" attributes="user">
   <template>
     <style>
       img {
-        border-radius: 3px;
+        border-radius: 4px;
+        margin: 4px 8px;
       }
     </style>
     <img id="gravatar">
@@ -17,8 +16,11 @@
     }
     Polymer({
       ready: function() {
-        var md5 = md5cache[this.uid]
+        var md5 = md5cache[this.user]
         this.$.gravatar.src = "http://www.gravatar.com/avatar/" + md5 + "?s=48"
+      },
+      userChanged: function() {
+        this.ready();
       }
     })
   </script>
