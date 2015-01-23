@@ -8,6 +8,7 @@
     <style>
       .my-comment {
         display: flex;
+        margin-top: 4px;
       }
       paper-autogrow-textarea {
         flex-grow: 1;
@@ -15,12 +16,10 @@
       }
       #body {
         font-family: inherit;
+        font-size: small;
         padding: 8px;
         border: 1px solid #ddd;
         box-sizing: border-box;
-      }
-      core-tooltip {
-        float: right;
       }
       .butt {
         color: #ddd;
@@ -36,11 +35,11 @@
     <div class="my-comment">
       <member-element id="member"></member-element>
       <paper-autogrow-textarea rows="2">
-        <textarea id="body"></textarea>
+        <textarea id="body" style="width: 100%"></textarea>
       <paper-autogrow-textarea>
     </div>
 
-    <div style="margin-bottom: 32px"><core-tooltip label="Comment">
+    <div><core-tooltip label="Comment" style="float: right">
       <paper-icon-button icon="create" class="butt" on-tap="{{createComment}}"></paper-icon-button>
     </core-tooltip></div>
 
@@ -74,10 +73,15 @@
     Polymer({
       ready: function() {
         this.$.member.user = window.location.search.substr(6);
+        this.$.xhr.request({
+          url: "/thread/" + this.tid,
+          "method": "GET"
+        });
         initWebSocket(this.tid, this.$.body, this.$.commentList);
       },
       createComment: function() {
         var _body = this.$.body;
+        if (_body.value.trim() == "") return;
         this.$.xhr.request({
           url: "/comment",
           method: "POST",
