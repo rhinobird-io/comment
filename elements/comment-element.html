@@ -2,7 +2,7 @@
 <link rel="import" href="../components/core-tooltip/core-tooltip.html">
 <link rel="import" href="../components/paper-icon-button/paper-icon-button.html">
 
-<polymer-element name="comment-element" attributes="cid user time body reply">
+<polymer-element name="comment-element" attributes="cid user time body textarea">
   <template>
     <style>
       .comment-wrapper {
@@ -44,8 +44,8 @@
       <div class="comment">
         <div>
           <span class="user">{{user}}</span>
-          <core-tooltip label={{time}}>
-            <span class="time">&middot;{{simpleTime}}</span>
+          <core-tooltip label={{timeTip}}>
+            <span class="time">&middot;{{timeTag}}</span>
           </core-tooltip>
         </div>
 
@@ -53,10 +53,10 @@
 
         <div>
           <core-tooltip label="Reply">
-            <paper-icon-button icon="reply" class="butt" on-tap="{{focusInput}}"></paper-icon-button>
+            <paper-icon-button icon="reply" class="butt" on-tap="{{startReply}}"></paper-icon-button>
           </core-tooltip>
           <core-tooltip label="Delete">
-            <paper-icon-button icon="delete" class="butt"></paper-icon-button>
+          <paper-icon-button icon="delete" class="butt" on-tap="{{deleteComment}}"></paper-icon-button>
           </core-tooltip>
         </div>
       </div>
@@ -69,13 +69,21 @@
     Polymer({
       ready: function() {
         var s = new Date(this.time * 1000).toString();
-        this.time = s.substr(0, 24);
-        this.simpleTime = s.substr(16, 5) + s.substr(3, 7);
+        this.timeTip = s.substr(0, 24);
+        this.timeTag = s.substr(16, 5) + s.substr(3, 7);
       },
-      focusInput: function() {
-        this.reply(this.user);
+      startReply: function() {
+        this.textarea.focus();
+        this.textarea.value = "@" + this.user + " ";
       },
       deleteComment: function() {
+        this.$.xhr.request({
+          url: "/comment/" + this.cid,
+          method: "DELETE"
+        });
+      },
+      timeChanged: function() {
+        this.ready();
       }
     })
   </script>

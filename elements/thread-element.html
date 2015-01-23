@@ -31,8 +31,7 @@
       }
     </style>
 
-    <div class="comment-list">
-    </div>
+    <div id="commentList"></div>
 
     <div class="my-comment">
       <member-element id="member"></member-element>
@@ -42,20 +41,58 @@
     </div>
 
     <div style="margin-bottom: 32px"><core-tooltip label="Comment">
-      <paper-icon-button icon="create" class="butt" on-tap="createComment"></paper-icon-button>
+      <paper-icon-button icon="create" class="butt" on-tap="{{createComment}}"></paper-icon-button>
     </core-tooltip></div>
 
     <core-xhr id="xhr"></core-xhr>
   </template>
 
   <script>
+    function initWebSocket(tid, textarea, list) {
+      var url = "ws://localhost:9080/ws/" + tid + "?time=Thu, 01 Jan 2015 00:00:00";
+      ws = new WebSocket(url);
+      ws.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+        if (data.body === null) {
+          var comments = list.childNodes;
+          for (var i = 0; i < comments.length; i++) {
+            if (comments[i].cid == data.cid) {
+              list.removeChild(comments[i]);
+            }
+          }
+        } else if (data.body !== undefined) {
+          var c = document.createElement("comment-element");
+          c.cid = data.cid;
+          c.user = data.user;
+          c.time = data.time;
+          c.body = data.body;
+          c.textarea = textarea;
+          list.appendChild(c);
+        }
+      };
+    }
     Polymer({
       ready: function() {
         this.$.member.user = window.location.search.substr(6);
+        initWebSocket(this.tid, this.$.body, this.$.commentList);
       },
       createComment: function() {
-      },
-      focusInput: function() {
+        var _body = this.$.body;
+        this.$.xhr.request({
+          url: "/comment",
+          method: "POST",
+          headers: {
+            "Content-type": "application/json"
+          },
+          body: JSON.stringify({
+            "user": this.$.member.user,
+            "tid": this.tid,
+            "body": this.$.body.value
+          }),
+          callback: function() {
+            _body.value = "";
+          }
+        });
       }
     })
   </script>

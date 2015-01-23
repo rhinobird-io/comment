@@ -2,6 +2,7 @@
 
 import json
 import time
+import os
 import cherrypy
 
 import utils.nginx_client as nginx_client
@@ -73,6 +74,10 @@ class Comment(object):
         return ""
         
 
+class Root():
+    pass
+
+
 def start():
     cherrypy.log("\bConnecting to Redis...")
     redis_client.init_pool()  # TODO test connection
@@ -95,5 +100,18 @@ if __name__ == "__main__":
     cherrypy.engine.subscribe("start", start)
     cherrypy.engine.subscribe("stop", stop)
 
-    cherrypy.engine.start()
-    cherrypy.engine.block()
+    abspath = os.path.dirname(os.path.abspath(__file__))
+    cherrypy.quickstart(Root(), "/", {
+        "/demo.html": {
+            "tools.staticfile.on": True,
+            "tools.staticfile.filename": abspath + "/example/demo.html",
+        },
+        "/components": {
+            "tools.staticdir.on": True,
+            "tools.staticdir.dir": abspath + "/components",
+        },
+        "/elements": {
+            "tools.staticdir.on": True,
+            "tools.staticdir.dir": abspath + "/elements",
+        },
+    })
