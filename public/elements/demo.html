@@ -2,26 +2,21 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <link rel="import" href="/comment/elements/comment-element.html">
-    <link rel="import" href="/platform/elements/html-echo/html-echo.html">
+    <link rel="import" href="/comment/elements/thread-element.html">
 </head>
 
 <body>
     <style>
-        body {
-            left: 50%;
-            max-width: 640px;
-            margin-left: 320px;
-        }
         #header {
             color: #3F51B5;
             border-bottom: 2px solid #3F51B5;
             margin-bottom: 8px;
         }
     </style>
-    <h3 id="header">Comments</h3>
-    <div>
-        <comment-element cid=1 time=1423573436000 user=31 body="Hello"></comment-element>
+    <div style="position: relative; left: 50%; width: 640px; margin-left: -320px">
+        <div>
+            <thread-element tid=900000000000000001></thread-element>
+        </div>
     </div>
 </body>
 </html>

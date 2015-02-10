@@ -1,103 +1,116 @@
-<link rel="import" href="../components/core-ajax/core-xhr.html">
-<link rel="import" href="../components/core-tooltip/core-tooltip.html">
-<link rel="import" href="../components/paper-input/paper-autogrow-textarea.html">
-<link rel="import" href="../components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/platform/bower_components/core-ajax/core-xhr.html">
+<link rel="import" href="/platform/bower_components/core-tooltip/core-tooltip.html">
+<link rel="import" href="/platform/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/platform/bower_components/paper-input/paper-autogrow-textarea.html">
+<link rel="import" href="/platform/elements/app-globals/app-globals.html">
+<link rel="import" href="/platform/elements/member-select/member-element.html">
+<link rel="import" href="/platform/elements/smart-editor/smart-editor.html">
+<link rel="import" href="comment-element.html">
 
 <polymer-element name="thread-element" attributes="tid">
-  <template>
-    <style>
-      .my-comment {
-        display: flex;
-        margin-top: 4px;
-      }
-      paper-autogrow-textarea {
-        flex-grow: 1;
-        margin: 4px 0;
-      }
-      #body {
-        font-family: inherit;
-        font-size: small;
-        padding: 8px;
-        border: 1px solid #ddd;
-        box-sizing: border-box;
-      }
-      .butt {
-        color: #ddd;
-        padding: 2px;
-      }
-      .butt::shadow #ripple {
-        color: black;
-      }
-    </style>
-
-    <div id="commentList"></div>
-
-    <div class="my-comment">
-      <member-element id="member"></member-element>
-      <paper-autogrow-textarea rows="2">
-        <textarea id="body" style="width: 100%"></textarea>
-      <paper-autogrow-textarea>
-    </div>
-
-    <div><core-tooltip label="Comment" style="float: right">
-      <paper-icon-button icon="create" class="butt" on-tap="{{createComment}}"></paper-icon-button>
-    </core-tooltip></div>
-
-    <core-xhr id="xhr"></core-xhr>
-  </template>
-
-  <script>
-    function initWebSocket(tid, textarea, list) {
-      var url = "ws://localhost:9080/ws/" + tid + "?time=Thu, 01 Jan 2015 00:00:00";
-      ws = new WebSocket(url);
-      ws.onmessage = function(e) {
-        var data = JSON.parse(e.data);
-        if (data.body === null) {
-          var comments = list.childNodes;
-          for (var i = 0; i < comments.length; i++) {
-            if (comments[i].cid == data.cid) {
-              list.removeChild(comments[i]);
+    <template>
+        <style>
+            member-element /deep/ .element > div {
+                width: 100%;
             }
-          }
-        } else if (data.body !== undefined) {
-          var c = document.createElement("comment-element");
-          c.cid = data.cid;
-          c.user = data.user;
-          c.time = data.time;
-          c.body = data.body;
-          c.textarea = textarea;
-          list.appendChild(c);
-        }
-      };
-    }
-    Polymer({
-      ready: function() {
-        this.$.member.user = window.location.search.substr(6);
-        this.$.xhr.request({
-          url: "/thread/" + this.tid,
-          "method": "GET"
-        });
-        initWebSocket(this.tid, this.$.body, this.$.commentList);
-      },
-      createComment: function() {
-        var _body = this.$.body;
-        if (_body.value.trim() == "") return;
-        this.$.xhr.request({
-          url: "/comment",
-          method: "POST",
-          headers: {
-            "Content-type": "application/json"
-          },
-          body: JSON.stringify({
-            "user": this.$.member.user,
-            "tid": this.tid,
-            "body": this.$.body.value
-          }),
-          callback: function() {
-            _body.value = "";
-          }
-        });
-      }
-    })
-  </script>
+            member-element /deep/ .element > div div span {
+                display: none;
+            }
+            smart-editor /deep/ paper-input-decorator {
+                margin-top: -1em;
+            }
+            .content {
+                padding: 0 5px;
+            }
+            .butt {
+                color: #ddd;
+                padding: 2px;
+            }
+            .butt::shadow #ripple {
+                color: black;
+            }
+        </style>
+
+        <div id="commentList"></div>
+
+        <member-element imagesize=36 view="custom" username="{{user}}">
+            <div relative class="content">
+                <div>
+                    <smart-editor id="editor" label="Comment" flush="{{flush}}" ctrlEnter=1></smart-editor>
+                    <core-tooltip label="Comment" style="float: right">
+                        <paper-icon-button icon="done" class="butt" on-tap="{{postComment}}"></paper-icon-button>
+                    </core-tooltip>
+                </div>
+            </div>
+        </member-element>
+
+        <app-globals id="globals"></app-globals>
+        <core-xhr id="xhr"></core-xhr>
+    </template>
+
+    <script>
+        Polymer({
+            newPost: true,
+            lastPull: 0,
+            since: 0,
+
+            tidChanged: function() {
+                this.user = this.$.globals.values.currentUser.name;
+                var _this = this;
+                setInterval(function() {
+                    _this.refreshComment();
+                }, 20);
+            },
+
+            refreshComment: function() {
+                var ts = new Date().getTime();
+                if (this.newPost || ts - this.lastPull >= 6000) {
+                    this.newPost = false;
+                    this.lastPull = ts;
+                    var _this = this;
+                    this.$.xhr.request({
+                        url: "/comment/thread/" + this.tid,
+                        method: "GET",
+                        params: {"since": this.since},
+                        callback: function(response) {
+                            var comments = JSON.parse(response)
+                            for (var i = 0; i < comments.length; i++) {
+                                var c = comments[i];
+                                var e = document.createElement("comment-element");
+                                e.cid = c.cid;
+                                e.user = c.user;
+                                e.time = c.time;
+                                e.body = c.body;
+                                e.input = _this.$.editor.$.textarea;
+                                _this.$.commentList.appendChild(e);
+                                _this.since = c.cid;
+                            }
+                        }
+                    });
+                }
+            },
+
+            postComment: function() {
+                this.flush(this.$.editor);
+                this.newPost = true;
+            },
+
+            flush: function(editor) {
+                this.$.xhr.request({
+                    url: "/comment/comment",
+                    method: "POST",
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        "tid": this.tid,
+                        "body": editor.value
+                    }),
+                    callback: function() {
+                        editor.clearText();
+                    }
+                });
+            }
+        })
+    </script>
 </polymer-element>
