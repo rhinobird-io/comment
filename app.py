@@ -18,7 +18,7 @@ class Thread(object):
             return self
 
     @cherrypy.tools.json_out()
-    def GET(self, tid, since):
+    def GET(self, tid, since=None):
         comments = redis_client.load_thread(tid, since)
         return comments
 
@@ -48,7 +48,7 @@ class Comment(object):
     @cherrypy.tools.json_out()
     def POST(self):
         comment = cherrypy.request.json
-        comment["user"] = cherrypy.request.headers("X-User")
+        comment["user"] = cherrypy.request.headers.get("X-User", None)
         if not comment["user"]:
             cherrypy.log("Cannot find 'X-User' in headers")
             raise cherrypy.HTTPError(400)

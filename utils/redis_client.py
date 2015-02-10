@@ -25,7 +25,7 @@ def init_pool():
     port = int(port) if port else 6379
 
     global POOL
-    POOL = redis.ConnectionPool(host=host, port=port, db=0)
+    POOL = redis.ConnectionPool(host=host, port=port, db=0, socket_timeout=5)
 
     try:
         client = redis.Redis(connection_pool=POOL)
