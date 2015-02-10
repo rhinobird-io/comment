@@ -18,15 +18,9 @@ class Thread(object):
             return self
 
     @cherrypy.tools.json_out()
-    def GET(self, tid):
-        # Load a thread from Redis to Nginx
-        if not nginx_client.is_open(tid):
-            comment_list = redis_client.load_thread(tid)
-            # The result of last is_open() might expire
-            if not nginx_client.is_open(tid):
-                for comment in comment_list:
-                    nginx_client.push(tid, comment)
-        return {"url": WS_URL % tid}
+    def GET(self, tid, since):
+        comments = redis_client.load_thread(tid, since)
+        return json.dumps(comments)
 
     @cherrypy.tools.json_out()
     def POST(self):

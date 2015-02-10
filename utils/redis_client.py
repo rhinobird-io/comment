@@ -51,14 +51,16 @@ def new_thread():
     return str(tid)
 
 
-def load_thread(tid):
+def load_thread(tid, since):
     client = redis.Redis(connection_pool=POOL)
-    cid_list = client.lrange(tid, 0, -1)
-    comment_list = []
-    for cid in cid_list:
-        comment = _hget_comment(client, cid)
-        comment_list.append(comment)
-    return comment_list
+    cids = client.lrange(tid, 0, -1)
+    since = int(since) if since else -1
+    comments = []
+    for cid in cids:
+        if int(cid) > since:
+            comment = _hget_comment(client, cid)
+            comments.append(json.loads(comment))
+    return comments
 
 
 def get_comment(cid):
