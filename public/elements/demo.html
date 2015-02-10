@@ -1,30 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <title>Comment Plugin</title>
-
-  <script src="../components/webcomponentsjs/webcomponents.js"></script>
-  <link rel="import" href="../components/polymer/polymer.html">
-  <link rel="import" href="../elements/member-element.html">
-  <link rel="import" href="../elements/comment-element.html">
-  <link rel="import" href="../elements/thread-element.html">
+    <meta charset="utf-8">
+    <link rel="import" href="/comment/elements/comment-element.html">
+    <link rel="import" href="/platform/elements/html-echo/html-echo.html">
 </head>
 
 <body>
-  <style>
-    body { max-width: 640px; }
-    #header {
-      color: #3F51B5;
-      border-bottom: 2px solid #3F51B5;
-      margin-bottom: 8px;
-    }
-  </style>
-  <h3 id="header">Comments</h3>
-  <div>
-    <thread-element tid="900000000000000001"></thread-element>
-  </div>
+    <style>
+        body {
+            left: 50%;
+            max-width: 640px;
+            margin-left: 320px;
+        }
+        #header {
+            color: #3F51B5;
+            border-bottom: 2px solid #3F51B5;
+            margin-bottom: 8px;
+        }
+    </style>
+    <h3 id="header">Comments</h3>
+    <div>
+        <comment-element cid=1 time=1423573436000 user=31 body="Hello"></comment-element>
+    </div>
 </body>
 </html>
