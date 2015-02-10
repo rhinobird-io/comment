@@ -70,26 +70,23 @@ def get_comment(cid):
 
 def new_comment(comment):
     client = redis.Redis(connection_pool=POOL)
-    # Assign comment ID for new comment
-    cid = client.incr(COUNT_COMMENTS_KEY)
-    cid = str(cid)
+    # Assign comment ID to new comment
+    cid = str(client.incr(COUNT_COMMENTS_KEY))
     comment["cid"] = cid
     client.hset(COMMENTS_KEY, cid, json.dumps(comment))
     # Push new comment to thread queue
-    tid = comment["tid"]
-    client.rpush(tid, cid)
-    return cid
+    client.rpush(comment["tid"], cid)
 
 
 def delete_comment(cid):
     client = redis.Redis(connection_pool=POOL)
     comment = _hget_comment(client, cid)
-    tid = json.loads(comment)["tid"]
-    client.lrem(tid, cid)
-    client.hdel(COMMENTS_KEY, cid)
-    return tid
+    if comment:
+        tid = json.loads(comment)["tid"]
+        client.lrem(tid, cid)
+        client.hdel(COMMENTS_KEY, cid)
 
 
 def _hget_comment(client, cid):
     b = client.hget(COMMENTS_KEY, cid)
-    return b.decode("utf-8")
+    return b.decode("utf-8") if b else None

@@ -20,7 +20,7 @@ class Thread(object):
     @cherrypy.tools.json_out()
     def GET(self, tid, since):
         comments = redis_client.load_thread(tid, since)
-        return json.dumps(comments)
+        return comments
 
     @cherrypy.tools.json_out()
     def POST(self):
@@ -39,29 +39,26 @@ class Comment(object):
     @cherrypy.tools.json_out()
     def GET(self, cid):
         comment = redis_client.get_comment(cid)
-        return json.loads(comment)
+        if not comment:
+            raise cherrypy.HTTPError(404)
+        else:
+            return json.loads(comment)
 
     @cherrypy.tools.json_in()
     @cherrypy.tools.json_out()
     def POST(self):
         comment = cherrypy.request.json
-        comment["time"] = int(time.time())
-        cid = redis_client.new_comment(comment)
-        tid = comment["tid"]
-        if nginx_client.is_open(tid):
-            nginx_client.push(comment["tid"], json.dumps(comment))
-        return {"cid": str(cid)}
+        comment["user"] = cherrypy.request.headers("X-User")
+        if not comment["user"]:
+            cherrypy.log("Cannot find 'X-User' in headers")
+            raise cherrypy.HTTPError(400)
+
+        comment["time"] = int(time.time() * 1000)
+        redis_client.new_comment(comment)
+        return {"cid": comment["cid"]}
 
     def DELETE(self, cid):
-        tid = redis_client.delete_comment(cid)
-        if nginx_client.is_open(tid):
-            false_comment = json.dumps({
-                "tid": tid,
-                "cid": cid,
-                "body": None,
-            })
-            nginx_client.push(tid, false_comment)
-        return ""
+        redis_client.delete_comment(cid)
 
 
 class Root():
