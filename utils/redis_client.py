@@ -14,6 +14,9 @@ INIT_COMMENT_ID = int(1e18)
 
 POOL = None
 
+# NOTE
+# tid/cid returned by all following functions should be in string format.
+
 
 def init_pool():
     host, port = os.getenv("REDIS_HOST"), os.getenv("REDIS_PORT")
@@ -23,6 +26,13 @@ def init_pool():
 
     global POOL
     POOL = redis.ConnectionPool(host=host, port=port, db=0)
+
+    try:
+        client = redis.Redis(connection_pool=POOL)
+        pong = client.ping()
+        return pong, "%s:%d" % (host, port)
+    except redis.exceptions.ConnectionError as e:
+        return False, str(e)
 
 
 def init_count():

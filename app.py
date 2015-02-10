@@ -78,6 +78,7 @@ def start():
     cherrypy.log("\bConnecting to Redis...")
     ok, msg = redis_client.init_pool()
     if ok:
+        cherrypy.log("\bConnected to Redis [%s]" % msg)
         redis_client.init_count()
     else:
         cherrypy.log(msg)
