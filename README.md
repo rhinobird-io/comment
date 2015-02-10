@@ -3,14 +3,14 @@ Comment Plugin
 
 ### API
 
-* POST /thread
+* POST `/thread`
     ```
     # Response
     { "tid": "900000000000000001" }
     ```
 
-* GET /thread/:tid
-* GET /thread/:tid?since=:cid
+* GET `/thread/:tid`
+* GET `/thread/:tid?since=:cid`
     ```
     # Response
     [ { "tid": "900000000000000001",
@@ -27,7 +27,7 @@ Comment Plugin
     ]
     ```
 
-* GET /comment/:cid
+* GET `/comment/:cid`
     ```
     # Response
     { "tid": "900000000000000001",
@@ -38,7 +38,7 @@ Comment Plugin
     }
     ```
 
-* POST /comment
+* POST `/comment`
     ```
     # Request
     { "tid": "900000000000000001",
@@ -49,5 +49,4 @@ Comment Plugin
     { "cid": "1000000000000000017" }
     ```
 
-* DELETE /comment/:cid
-
+* DELETE `/comment/:cid`
