@@ -96,8 +96,8 @@ if __name__ == "__main__":
 
     abspath = os.path.dirname(os.path.abspath(__file__))
     cherrypy.quickstart(Root(), "/", {
-        "/public": {
+        "/elements": {
             "tools.staticdir.on": True,
-            "tools.staticdir.dir": abspath + "/public",
+            "tools.staticdir.dir": abspath + "/public/elements",
         }
     })
