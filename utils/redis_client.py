@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
 import json
+import os
+
 import redis
 
 COUNT_THREADS_KEY = "COUNT_THREADS"
@@ -14,8 +16,13 @@ POOL = None
 
 
 def init_pool():
+    host, port = os.getenv("REDIS_HOST"), os.getenv("REDIS_PORT")
+    if not host:
+        host = "localhost"
+    port = int(port) if port else 6379
+
     global POOL
-    POOL = redis.ConnectionPool(host='localhost', port=6379, db=0)
+    POOL = redis.ConnectionPool(host=host, port=port, db=0)
 
 
 def init_count():

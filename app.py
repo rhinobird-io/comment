@@ -76,8 +76,12 @@ class Root():
 
 def start():
     cherrypy.log("\bConnecting to Redis...")
-    redis_client.init_pool()  # TODO test connection
-    redis_client.init_count()
+    ok, msg = redis_client.init_pool()
+    if ok:
+        redis_client.init_count()
+    else:
+        cherrypy.log(msg)
+        cherrypy.engine.exit()
 
 
 def stop():
