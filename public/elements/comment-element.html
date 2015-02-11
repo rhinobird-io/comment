@@ -74,9 +74,15 @@
                 this.input.value = "@" + this.username + " ";
             },
             deleteComment: function() {
-                this.$.xhr.request({
+                var _this = this;
+                var xhr = this.$.xhr.request({
                     url: "/comment/comment/" + this.cid,
-                    method: "DELETE"
+                    method: "DELETE",
+                    callback: function() {
+                        if (xhr.status == 200 && xhr.readyState == 4) {
+                            _this.setNewPost();
+                        }
+                    }
                 });
             },
             timeChanged: function() {

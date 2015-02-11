@@ -37,7 +37,7 @@
             <div relative class="content">
                 <smart-editor id="editor" label="Comment" flush="{{flush}}" ctrlEnter=1></smart-editor>
                 <core-tooltip label="Comment" style="float: right">
-                    <paper-icon-button icon="done" class="butt" on-tap="{{postComment}}"></paper-icon-button>
+                    <paper-icon-button icon="done" class="butt" on-tap="{{flush}}"></paper-icon-button>
                 </core-tooltip>
             </div>
         </member-element>
@@ -77,16 +77,27 @@
                             var comments = JSON.parse(response)
                             for (var i = 0; i < comments.length; i++) {
                                 var c = comments[i];
-                                var e = document.createElement("comment-element");
-                                e.cid = c.cid;
-                                e.time = c.time;
-                                e.body = c.body;
-                                e.username = _this.$.globals.values.memberCache[c.user].name;
-                                e.input = _this.$.editor.$.textarea;
-                                if (_this.userid != c.user) {
-                                    e.disableDelete = 1;
+                                if (c.cid < 0) {
+                                    var list = _this.$.commentList.childNodes;
+                                    for (var j = 0; j < list.length; j++) {
+                                        if ("-" + list[j].cid == c.cid) {
+                                            _this.$.commentList.removeChild(list[j]);
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    var e = document.createElement("comment-element");
+                                    e.cid = c.cid;
+                                    e.time = c.time;
+                                    e.body = c.body;
+                                    e.username = _this.$.globals.values.memberCache[c.user].name;
+                                    e.input = _this.$.editor.$.textarea;
+                                    e.setNewPost = _this.setNewPost;
+                                    if (_this.userid != c.user) {
+                                        e.disableDelete = 1;
+                                    }
+                                    _this.$.commentList.appendChild(e);
                                 }
-                                _this.$.commentList.appendChild(e);
                                 _this.since = c.cid;
                             }
                         }
@@ -94,8 +105,8 @@
                 }
             },
 
-            postComment: function() {
-                this.flush();
+            setNewPost: function() {
+                _this.newPost = true;
             },
 
             flush: function() {

@@ -54,10 +54,12 @@ def new_thread():
 def load_thread(tid, since):
     client = redis.Redis(connection_pool=POOL)
     cids = client.lrange(tid, 0, -1)
-    since = int(since) if since else -1
+    cids = _find_since([b.decode("utf-8") for b in cids], since)
     comments = []
     for cid in cids:
-        if int(cid) > since:
+        if int(cid) < 0:
+            comments.append({"cid": cid})
+        else:
             comment = _hget_comment(client, cid)
             comments.append(json.loads(comment))
     return comments
@@ -83,10 +85,26 @@ def delete_comment(cid):
     comment = _hget_comment(client, cid)
     if comment:
         tid = json.loads(comment)["tid"]
-        client.lrem(tid, cid)
+        client.rpush(tid, -int(cid))
         client.hdel(COMMENTS_KEY, cid)
 
 
 def _hget_comment(client, cid):
     b = client.hget(COMMENTS_KEY, cid)
     return b.decode("utf-8") if b else None
+
+
+def _find_since(cids, since):
+    if since and int(since) != 0:
+        cids = cids[cids.index(since) + 1 :]
+
+    Map = {}
+    for cid in cids:
+        Map[int(cid)] = True
+
+    result = []
+    for cid in cids:
+        if not Map.get(-int(cid), None):
+            result.append(cid)
+
+    return result
