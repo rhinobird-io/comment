@@ -33,14 +33,12 @@
 
         <div id="commentList"></div>
 
-        <member-element imagesize=36 view="custom" username="{{user}}">
+        <member-element imagesize=36 view="custom" username="{{username}}">
             <div relative class="content">
-                <div>
-                    <smart-editor id="editor" label="Comment" flush="{{flush}}" ctrlEnter=1></smart-editor>
-                    <core-tooltip label="Comment" style="float: right">
-                        <paper-icon-button icon="done" class="butt" on-tap="{{postComment}}"></paper-icon-button>
-                    </core-tooltip>
-                </div>
+                <smart-editor id="editor" label="Comment" flush="{{flush}}" ctrlEnter=1></smart-editor>
+                <core-tooltip label="Comment" style="float: right">
+                    <paper-icon-button icon="done" class="butt" on-tap="{{postComment}}"></paper-icon-button>
+                </core-tooltip>
             </div>
         </member-element>
 
@@ -49,14 +47,18 @@
     </template>
 
     <script>
+        var _this;
+
         Polymer({
             newPost: true,
             lastPull: 0,
             since: 0,
 
             tidChanged: function() {
-                this.user = this.$.globals.values.currentUser.name;
-                var _this = this;
+                // ready
+                _this = this;
+                this.userid = this.$.globals.values.currentUser.id;
+                this.username = this.$.globals.values.currentUser.name;
                 setInterval(function() {
                     _this.refreshComment();
                 }, 20);
@@ -67,7 +69,6 @@
                 if (this.newPost || ts - this.lastPull >= 6000) {
                     this.newPost = false;
                     this.lastPull = ts;
-                    var _this = this;
                     this.$.xhr.request({
                         url: "/comment/thread/" + this.tid,
                         method: "GET",
@@ -78,10 +79,13 @@
                                 var c = comments[i];
                                 var e = document.createElement("comment-element");
                                 e.cid = c.cid;
-                                e.user = c.user;
                                 e.time = c.time;
                                 e.body = c.body;
+                                e.username = _this.$.globals.values.memberCache[c.user].name;
                                 e.input = _this.$.editor.$.textarea;
+                                if (_this.userid != c.user) {
+                                    e.disableDelete = 1;
+                                }
                                 _this.$.commentList.appendChild(e);
                                 _this.since = c.cid;
                             }
@@ -91,23 +95,25 @@
             },
 
             postComment: function() {
-                this.flush(this.$.editor);
-                this.newPost = true;
+                this.flush();
             },
 
-            flush: function(editor) {
-                this.$.xhr.request({
+            flush: function() {
+                var xhr = _this.$.xhr.request({
                     url: "/comment/comment",
                     method: "POST",
                     headers: {
                         "Content-type": "application/json"
                     },
                     body: JSON.stringify({
-                        "tid": this.tid,
-                        "body": editor.value
+                        "tid": _this.tid,
+                        "body": _this.$.editor.value
                     }),
-                    callback: function() {
-                        editor.clearText();
+                    callback: function(response) {
+                        if (xhr.status == 200 && xhr.readyState == 4) {
+                            _this.newPost = true;
+                            _this.$.editor.clearText();
+                        }
                     }
                 });
             }

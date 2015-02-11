@@ -4,7 +4,7 @@
 <link rel="import" href="/platform/elements/member-select/member-element.html">
 <link rel="import" href="/platform/elements/smart-editor/smart-display.html">
 
-<polymer-element name="comment-element" attributes="cid time user body input">
+<polymer-element name="comment-element" attributes="cid time username body input disableDelete">
     <template>
         <style>
             member-element /deep/ .element > div {
@@ -41,22 +41,20 @@
         </style>
 
         <div id="wrapper">
-            <member-element username={{user}} imagesize=36 view="custom">
+            <member-element username={{username}} imagesize=36 view="custom">
                 <div class="title">
                     <core-tooltip label={{timeTip}}>
                         <span class="time">&middot;{{timeTag}}</span>
                     </core-tooltip>
                 </div>
-                <div relative class="content">
-                    <div>
-                        <smart-display value="{{body}}" class="p"></smart-display>
-                        <core-tooltip label="Delete" style="float: right">
-                            <paper-icon-button icon="close" class="butt" on-tap="{{deleteComment}}"></paper-icon-button>
-                        </core-tooltip>
-                        <core-tooltip label="Reply" style="float: right">
-                            <paper-icon-button icon="reply" class="butt" on-tap="{{startReply}}"></paper-icon-button>
-                        </core-tooltip>
-                    </div>
+                <div relative class="content" id="content">
+                    <smart-display value="{{body}}" class="p"></smart-display>
+                    <core-tooltip id="deleteButton" label="Delete" style="float: right">
+                        <paper-icon-button icon="close" class="butt" on-tap="{{deleteComment}}"></paper-icon-button>
+                    </core-tooltip>
+                    <core-tooltip label="Reply" style="float: right">
+                        <paper-icon-button icon="reply" class="butt" on-tap="{{startReply}}"></paper-icon-button>
+                    </core-tooltip>
                 </div>
             </member-element>
         </div>
@@ -66,9 +64,14 @@
 
     <script>
         Polymer({
+            disableDeleteChanged: function() {
+                if (this.disableDelete == 1) {
+                    this.$.content.removeChild(this.$.deleteButton);
+                }
+            },
             startReply: function() {
                 this.input.focus();
-                this.input.value = "@" + this.user + " ";
+                this.input.value = "@" + this.username + " ";
             },
             deleteComment: function() {
                 this.$.xhr.request({
