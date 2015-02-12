@@ -67,6 +67,7 @@
                 var xhr = this.$.xhr.request({
                     url: "/comment/thread",
                     method: "POST",
+                    headers: {"Content-type": "application/x-www-form-urlencoded"},
                     params: {"key": _this.key},
                     callback: function(response) {
                         if (xhr.status == 200 && xhr.readyState == 4) {
@@ -133,9 +134,7 @@
                 var xhr = _this.$.xhr.request({
                     url: "/comment/comment",
                     method: "POST",
-                    headers: {
-                        "Content-type": "application/json"
-                    },
+                    headers: {"Content-type": "application/json"},
                     body: JSON.stringify({
                         "tid": _this.tid,
                         "body": _this.$.editor.value
