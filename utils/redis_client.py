@@ -19,10 +19,8 @@ POOL = None
 
 
 def init_pool():
-    host, port = os.getenv("REDIS_HOST"), os.getenv("REDIS_PORT")
-    if not host:
-        host = "localhost"
-    port = int(port) if port else 6379
+    host = os.getenv("REDIS_HOST", "localhost")
+    port = int(os.getenv("REDIS_PORT", 6379))
 
     global POOL
     POOL = redis.ConnectionPool(host=host, port=port, db=0, socket_timeout=5)

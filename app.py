@@ -94,6 +94,9 @@ if __name__ == "__main__":
     cherrypy.engine.subscribe("start", start)
     cherrypy.engine.subscribe("stop", stop)
 
+    port = int(os.getenv("PORT", 5000))
+    cherrypy.config.update({"server.socket_port": port})
+
     abspath = os.path.dirname(os.path.abspath(__file__))
     cherrypy.quickstart(Root(), "/", {
         "/elements": {
