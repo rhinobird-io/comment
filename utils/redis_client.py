@@ -94,7 +94,7 @@ def _hget_comment(client, cid):
 
 def _find_since(cids, since):
     if since and int(since) != 0:
-        cids = cids[cids.index(since) + 1 :]
+        cids = cids[cids.index(since) + 1:]
 
     Map = {}
     for cid in cids:

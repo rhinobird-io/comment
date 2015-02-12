@@ -94,8 +94,7 @@ if __name__ == "__main__":
     cherrypy.engine.subscribe("start", start)
     cherrypy.engine.subscribe("stop", stop)
 
-    port = int(os.getenv("PORT", 5000))
-    cherrypy.config.update({"server.socket_port": port})
+    cherrypy.server.socket_port = int(os.getenv("PORT", 5000))
     cherrypy.server.socket_host = "0.0.0.0"
 
     abspath = os.path.dirname(os.path.abspath(__file__))
