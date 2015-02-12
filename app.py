@@ -6,6 +6,7 @@ import time
 
 import cherrypy
 
+import utils.log_filter as log_filter
 import utils.redis_client as redis_client
 
 
@@ -90,6 +91,7 @@ if __name__ == "__main__":
     }
     cherrypy.tree.mount(Thread(), "/thread", conf)
     cherrypy.tree.mount(Comment(), "/comment", conf)
+    cherrypy.tree.apps["/thread"].log.access_log.addFilter(log_filter)
 
     cherrypy.engine.subscribe("start", start)
     cherrypy.engine.subscribe("stop", stop)
