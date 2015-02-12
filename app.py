@@ -6,8 +6,8 @@ import time
 
 import cherrypy
 
-import utils.log_filter as log_filter
 import utils.redis_client as redis_client
+from utils.log_filter import PullThreadFilter
 
 
 class Thread(object):
@@ -24,8 +24,8 @@ class Thread(object):
         return comments
 
     @cherrypy.tools.json_out()
-    def POST(self):
-        tid = redis_client.new_thread()
+    def POST(self, key=None):
+        tid = redis_client.new_thread(key)
         return {"tid": tid}
 
 
@@ -91,7 +91,7 @@ if __name__ == "__main__":
     }
     cherrypy.tree.mount(Thread(), "/thread", conf)
     cherrypy.tree.mount(Comment(), "/comment", conf)
-    cherrypy.tree.apps["/thread"].log.access_log.addFilter(log_filter)
+    cherrypy.tree.apps["/thread"].log.access_log.addFilter(PullThreadFilter())
 
     cherrypy.engine.subscribe("start", start)
     cherrypy.engine.subscribe("stop", stop)

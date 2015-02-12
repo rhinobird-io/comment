@@ -4,6 +4,7 @@ Comment Plugin
 ### API
 
 * POST `/thread`
+* POST `/thread?key=:key`
     ```
     # Response
     { "tid": "900000000000000001" }

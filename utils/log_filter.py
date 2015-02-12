@@ -6,4 +6,4 @@ class PullThreadFilter(logging.Filter):
         self.ignore = "GET \/thread\/\d+\S+ HTTP\/\S+ 200"
 
     def filter(self, record):
-        return not re.search(self.ignore, record)
+        return not re.search(self.ignore, record.getMessage())

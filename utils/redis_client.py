@@ -5,6 +5,7 @@ import redis
 
 COUNT_THREADS_KEY = "COUNT_THREADS"
 COUNT_COMMENTS_KEY = "COUNT_COMMENTS"
+THREADS_KEY = "THREADS"
 COMMENTS_KEY = "COMMENTS"
 
 INIT_THREAD_ID = int(9e17)
@@ -41,10 +42,17 @@ def init_count():
         client.set(COUNT_COMMENTS_KEY, INIT_COMMENT_ID)
 
 
-def new_thread():
+def new_thread(key):
     client = redis.Redis(connection_pool=POOL)
-    tid = client.incr(COUNT_THREADS_KEY)
-    return str(tid)
+    if key:
+        tid = client.hget(THREADS_KEY, key)
+        if not tid:
+            tid = client.incr(COUNT_THREADS_KEY)
+            client.hset(THREADS_KEY, key, tid)
+    else:
+        tid = client.incr(COUNT_THREADS_KEY)
+
+    return str(int(tid))
 
 
 def load_thread(tid, since):

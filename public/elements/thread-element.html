@@ -7,7 +7,7 @@
 <link rel="import" href="/platform/elements/smart-editor/smart-editor.html">
 <link rel="import" href="comment-element.html">
 
-<polymer-element name="thread-element" attributes="tid">
+<polymer-element name="thread-element" attributes="tid key">
     <template>
         <style>
             member-element /deep/ .element > div {
@@ -57,9 +57,26 @@
             lastPull: 0,
             since: 0,
 
-            tidChanged: function() {
-                // ready
+            ready: function() {
                 _this = this;
+                if (this.tid) return;
+                if (! this.key) {
+                    console.error("Neither tid or key is defined");
+                    return;
+                }
+                var xhr = this.$.xhr.request({
+                    url: "/comment/thread",
+                    method: "POST",
+                    params: {"key": _this.key},
+                    callback: function(response) {
+                        if (xhr.status == 200 && xhr.readyState == 4) {
+                            _this.tid = JSON.parse(response).tid;
+                        }
+                    }
+                });
+            },
+
+            tidChanged: function() {
                 this.userid = this.$.globals.values.currentUser.id;
                 this.username = this.$.globals.values.currentUser.name;
                 setInterval(function() {
