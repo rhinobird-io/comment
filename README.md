@@ -1,6 +1,24 @@
 Comment Plugin
 ==============
 
+### Install
+
+```
+sudo apt-get install python3 python3-pip redis-server
+sudo pip3 install -r requirements.txt
+
+# Start app
+./app.py
+```
+
+### Usage
+
+```
+<link rel="import" href="/comment/elements/thread-element.html">
+
+<thread-element key="task/issues/123"></thread-element>
+```
+
 ### API
 
 * POST `/thread`
