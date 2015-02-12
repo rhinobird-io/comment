@@ -16,6 +16,9 @@
             member-element /deep/ .element > div div span {
                 display: none;
             }
+            member-element /deep/ .core-tooltip.top {
+                margin-bottom: 5px;
+            }
             smart-editor /deep/ paper-input-decorator {
                 margin-top: -1em;
             }
@@ -36,7 +39,7 @@
         <member-element imagesize=36 view="custom" username="{{username}}">
             <div relative class="content">
                 <smart-editor id="editor" label="Comment" flush="{{flush}}" ctrlEnter=1></smart-editor>
-                <core-tooltip label="Comment" style="float: right">
+                <core-tooltip label="Comment" position="top" style="float: right">
                     <paper-icon-button icon="done" class="butt" on-tap="{{flush}}"></paper-icon-button>
                 </core-tooltip>
             </div>

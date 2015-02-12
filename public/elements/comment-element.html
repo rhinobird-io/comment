@@ -17,6 +17,9 @@
                 font-size: medium;
                 font-weight: bold;
             }
+            member-element /deep/ .core-tooltip.top {
+                margin-bottom: 5px;
+            }
             .time {
                 display: inline-block;
                 padding-top: 0.2em;
@@ -43,16 +46,16 @@
         <div id="wrapper">
             <member-element username={{username}} imagesize=36 view="custom">
                 <div class="title">
-                    <core-tooltip label={{timeTip}}>
-                        <span class="time">&middot;{{timeTag}}</span>
+                    <core-tooltip label={{timeTip}} position="top">
+                        <span class="time">{{timeTag}}</span>
                     </core-tooltip>
                 </div>
                 <div relative class="content" id="content">
                     <smart-display value="{{body}}" class="p"></smart-display>
-                    <core-tooltip id="deleteButton" label="Delete" style="float: right">
+                    <core-tooltip id="deleteButton" label="Delete" position="top" style="float: right">
                         <paper-icon-button icon="close" class="butt" on-tap="{{deleteComment}}"></paper-icon-button>
                     </core-tooltip>
-                    <core-tooltip label="Reply" style="float: right">
+                    <core-tooltip label="Reply" position="top" style="float: right">
                         <paper-icon-button icon="reply" class="butt" on-tap="{{startReply}}"></paper-icon-button>
                     </core-tooltip>
                 </div>
