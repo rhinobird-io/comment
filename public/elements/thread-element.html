@@ -57,13 +57,8 @@
             lastPull: 0,
             since: 0,
 
-            ready: function() {
+            keyChanged: function() {
                 _this = this;
-                if (this.tid) return;
-                if (! this.key) {
-                    console.error("Neither tid or key is defined");
-                    return;
-                }
                 var xhr = this.$.xhr.request({
                     url: "/comment/thread",
                     method: "POST",
@@ -78,9 +73,11 @@
             },
 
             tidChanged: function() {
+                _this = this;
                 this.userid = this.$.globals.values.currentUser.id;
                 this.username = this.$.globals.values.currentUser.name;
                 setInterval(function() {
+                    _this.setNewPost();
                     _this.refreshComment();
                 }, 20);
             },
