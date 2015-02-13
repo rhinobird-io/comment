@@ -66,6 +66,7 @@
                     params: {"key": _this.key},
                     callback: function(response) {
                         if (xhr.status == 200 && xhr.readyState == 4) {
+                            _this.setNewPost();
                             _this.tid = JSON.parse(response).tid;
                         }
                     }
@@ -77,7 +78,6 @@
                 this.userid = this.$.globals.values.currentUser.id;
                 this.username = this.$.globals.values.currentUser.name;
                 setInterval(function() {
-                    _this.setNewPost();
                     _this.refreshComment();
                 }, 20);
             },
