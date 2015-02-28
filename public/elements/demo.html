@@ -6,17 +6,19 @@
 </head>
 
 <body>
-    <style>
-        #header {
-            color: #3F51B5;
-            border-bottom: 2px solid #3F51B5;
-            margin-bottom: 8px;
-        }
-    </style>
-    <div style="position: relative; top: 25px; left: 50%; width: 640px; margin-left: -320px">
-        <div>
-            <thread-element key="test/1"></thread-element>
-        </div>
-    </div>
+    <polymer-element name="thread-demo">
+        <template>
+            <div style="position: relative; top: 25px; left: 50%; width: 640px; margin-left: -320px">
+                <thread-element key="test/1" on-flush="{{flush}}"></thread-element>
+            </div>
+        </template>
+        <script>
+            Polymer({
+                flush: function() { console.log("FLUSH") }
+            });
+        </script>
+    </polymer-element>
+
+    <thread-demo></thread-demo>
 </body>
 </html>
