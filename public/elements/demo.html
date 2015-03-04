@@ -14,7 +14,7 @@
         </template>
         <script>
             Polymer({
-                flush: function() { console.log("FLUSH") }
+                flush: function(event, detail) { console.log(detail.value) }
             });
         </script>
     </polymer-element>
