@@ -18,7 +18,7 @@ POOL = None
 
 
 def init_pool():
-    host = os.getenv("REDIS_HOST", "localhost")
+    host = os.getenv("REDIS_IP", "localhost")
     port = int(os.getenv("REDIS_PORT", 6379))
 
     global POOL
