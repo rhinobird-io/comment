@@ -11,7 +11,7 @@
                 width: 100%;
             }
             member-element /deep/ .element > div div:not(.title) {
-                margin-top: -12px;
+                margin-top: -5px;
             }
             member-element /deep/ .element > div div span {
                 font-size: medium;
@@ -27,37 +27,40 @@
                 color: #888;
             }
             .content {
-                padding: 0 5px;
+                padding: 0 0.5em;
+                margin-bottom: 0.3em;
             }
             .butt {
                 color: #ddd;
                 padding: 2px;
-                margin-left: 8px;
+                margin-left: 1em;
             }
             .butt::shadow #ripple {
                 color: black;
             }
             #wrapper {
                 border-bottom: 1px solid #ddd;
-                margin-bottom: 1em;
+                margin-bottom: 0.7em;
             }
         </style>
 
         <div id="wrapper">
-            <member-element username={{username}} imagesize=36 view="custom">
+            <member-element username={{username}} imagesize=36 view="custom" borderRadius="18px">
                 <div class="title">
                     <core-tooltip label={{timeTip}} position="top">
                         <span class="time">{{timeTag}}</span>
                     </core-tooltip>
                 </div>
-                <div relative class="content" id="content">
+                <div relative class="content" id="content" vertical layout>
                     <smart-display value="{{body}}" class="p"></smart-display>
-                    <core-tooltip id="deleteButton" label="Delete" position="top" style="float: right">
-                        <paper-icon-button icon="close" class="butt" on-tap="{{deleteComment}}"></paper-icon-button>
-                    </core-tooltip>
-                    <core-tooltip label="Reply" position="top" style="float: right">
-                        <paper-icon-button icon="reply" class="butt" on-tap="{{startReply}}"></paper-icon-button>
-                    </core-tooltip>
+                    <div horizontal layout end-justified style="margin-top: 0.3em">
+                        <core-tooltip id="deleteButton" label="Delete" position="top" style="float: right">
+                            <paper-icon-button icon="close" class="butt" on-tap="{{deleteComment}}"/>
+                        </core-tooltip>
+                        <core-tooltip label="Reply" position="top" style="float: right">
+                            <paper-icon-button icon="reply" class="butt" on-tap="{{startReply}}"/>
+                        </core-tooltip>
+                    <div>
                 </div>
             </member-element>
         </div>
