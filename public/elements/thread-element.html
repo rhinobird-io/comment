@@ -111,9 +111,7 @@
                                     e.username = _this.$.globals.values.memberCacheId[c.user].name;
                                     e.input = _this.$.editor.$.textarea;
                                     e.setNewPost = _this.setNewPost;
-                                    if (_this.userid != c.user) {
-                                        e.disableDelete = 1;
-                                    }
+                                    e.deletable = (_this.userid == c.user);
                                     _this.$.commentList.appendChild(e);
                                 }
                                 _this.since = c.cid;
