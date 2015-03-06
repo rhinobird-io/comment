@@ -4,14 +4,14 @@
 <link rel="import" href="/platform/elements/member-select/member-element.html">
 <link rel="import" href="/platform/elements/smart-editor/smart-display.html">
 
-<polymer-element name="comment-element" attributes="cid time username body input disableDelete">
+<polymer-element name="comment-element" attributes="cid time username body input deletable">
     <template>
         <style>
             member-element /deep/ .element > div {
                 width: 100%;
             }
             member-element /deep/ .element > div div:not(.title) {
-                margin-top: -12px;
+                margin-top: -5px;
             }
             member-element /deep/ .element > div div span {
                 font-size: medium;
@@ -24,40 +24,43 @@
                 display: inline-block;
                 padding-top: 0.2em;
                 font-size: small;
-                color: #888;
+                color: #999;
             }
             .content {
-                padding: 0 5px;
+                padding: 0 0.5em 1em;
             }
             .butt {
                 color: #ddd;
                 padding: 2px;
-                margin-left: 8px;
             }
             .butt::shadow #ripple {
                 color: black;
             }
             #wrapper {
                 border-bottom: 1px solid #ddd;
-                margin-bottom: 1em;
+                margin-bottom: 0.7em;
             }
         </style>
 
         <div id="wrapper">
-            <member-element username={{username}} imagesize=36 view="custom">
-                <div class="title">
-                    <core-tooltip label={{timeTip}} position="top">
+            <member-element username={{username}} imagesize=36 view="custom" borderRadius="18px">
+                <div class="title" horizontal justified layout>
+                    <core-tooltip label={{timeTip}} position="top" self-center>
                         <span class="time">{{timeTag}}</span>
                     </core-tooltip>
+                    <template if="{{deletable}}">
+                        <core-tooltip label="Delete" position="top">
+                            <paper-icon-button icon="close" class="butt" on-tap="{{deleteComment}}"></paper-icon-button>
+                        </core-tooltip>
+                    </template>
+                    <template if="{{!deletable}}">
+                        <core-tooltip label="Reply" position="top">
+                            <paper-icon-button icon="reply" class="butt" on-tap="{{startReply}}"></paper-icon-button>
+                        </core-tooltip>
+                    </template>
                 </div>
-                <div relative class="content" id="content">
+                <div relative class="content" id="content" vertical layout>
                     <smart-display value="{{body}}" class="p"></smart-display>
-                    <core-tooltip id="deleteButton" label="Delete" position="top" style="float: right">
-                        <paper-icon-button icon="close" class="butt" on-tap="{{deleteComment}}"></paper-icon-button>
-                    </core-tooltip>
-                    <core-tooltip label="Reply" position="top" style="float: right">
-                        <paper-icon-button icon="reply" class="butt" on-tap="{{startReply}}"></paper-icon-button>
-                    </core-tooltip>
                 </div>
             </member-element>
         </div>
@@ -67,11 +70,6 @@
 
     <script>
         Polymer({
-            disableDeleteChanged: function() {
-                if (this.disableDelete == 1) {
-                    this.$.content.removeChild(this.$.deleteButton);
-                }
-            },
             startReply: function() {
                 this.input.focus();
                 this.input.value = "@" + this.username + " ";

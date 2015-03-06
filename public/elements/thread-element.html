@@ -36,12 +36,16 @@
 
         <div id="commentList"></div>
 
-        <member-element imagesize=36 view="custom" username="{{username}}">
+        <member-element imagesize=36 view="custom" username="{{username}}" borderRadius="18px">
             <div relative class="content">
-                <smart-editor id="editor" label="Comment" floatingLabel underline flushKey="ctrl-enter" on-flush="{{flush}}"></smart-editor>
-                <core-tooltip label="Comment" position="top" style="float: right">
-                    <paper-icon-button icon="done" class="butt" on-tap="{{fireEditorFlush}}"></paper-icon-button>
-                </core-tooltip>
+                <smart-editor id="editor" label="Comment" floatingLabel underline flushKey="ctrl-enter"
+                              on-flush="{{flush}}" on-input="{{updateHint}}" on-blur="{{updateHint}}"></smart-editor>
+                <div horizontal justified layout>
+                    <span style="color: #999; font-size: small">{{hint}}</span>
+                    <core-tooltip label="Comment" position="top">
+                        <paper-icon-button icon="done" class="butt" on-tap="{{fireEditorFlush}}"></paper-icon-button>
+                    </core-tooltip>
+                </div>
             </div>
         </member-element>
 
@@ -111,9 +115,7 @@
                                     e.username = _this.$.globals.values.memberCacheId[c.user].name;
                                     e.input = _this.$.editor.$.textarea;
                                     e.setNewPost = _this.setNewPost;
-                                    if (_this.userid != c.user) {
-                                        e.disableDelete = 1;
-                                    }
+                                    e.deletable = (_this.userid == c.user);
                                     _this.$.commentList.appendChild(e);
                                 }
                                 _this.since = c.cid;
@@ -147,6 +149,14 @@
 
             fireEditorFlush: function() {
                 this.$.editor.flush();
+            },
+
+            updateHint: function(event, detail, sender) {
+                if (event.type == "input") {
+                    this.hint = "Ctrl + ↵ to send";
+                } else if (event.type == "blur") {
+                    this.hint = "";
+                }
             }
         })
     </script>
