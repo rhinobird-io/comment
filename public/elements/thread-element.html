@@ -140,6 +140,28 @@
                     }),
                     callback: function(response) {
                         if (xhr.status == 200 && xhr.readyState == 4) {
+                            // Send notifications
+                            var atUsers = _this.$.editor.atUsers.filter(function(x) {
+                                return _this.$.globals.values.memberCacheName[x];
+                            }).map(function(x) {
+                                return _this.$.globals.values.memberCacheName[x].id;
+                            });
+                            var currentUser = _this.$.globals.values.currentUser.name;
+                            _this.$.xhr.request({
+                                url: "/platform/users/notifications",
+                                method: "POST",
+                                headers: {"Content-type": "application/json"},
+                                body: JSON.stringify({
+                                    "users": atUsers,
+                                    "content": {
+                                        "content": "You were mentioned in @" + currentUser + "'s comment",
+                                        "created_at": new Date().toJSON(),
+                                        "updated_at": new Date().toJSON()
+                                    },
+                                    "url": window.location.toString()
+                                })
+                            });
+
                             _this.newPost = true;
                             _this.$.editor.clearText();
                         }
