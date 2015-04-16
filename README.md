@@ -21,15 +21,15 @@ sudo pip3 install -r requirements.txt
 
 ### API
 
-* POST `/thread`
-* POST `/thread?key=:key`
+* POST `/threads`
+* POST `/threads?key=:key`
     ```
     # Response
     { "tid": "900000000000000001" }
     ```
 
-* GET `/thread/:tid`
-* GET `/thread/:tid?since=:cid`
+* GET `/threads/:tid`
+* GET `/threads/:tid?since=:cid`
     ```
     # Response
     [ { "tid": "900000000000000001",
@@ -46,7 +46,7 @@ sudo pip3 install -r requirements.txt
     ]
     ```
 
-* GET `/comment/:cid`
+* GET `/comments/:cid`
     ```
     # Response
     { "tid": "900000000000000001",
@@ -57,7 +57,7 @@ sudo pip3 install -r requirements.txt
     }
     ```
 
-* POST `/comment`
+* POST `/comments`
     ```
     # Request
     { "tid": "900000000000000001",
@@ -68,4 +68,4 @@ sudo pip3 install -r requirements.txt
     { "cid": "1000000000000000017" }
     ```
 
-* DELETE `/comment/:cid`
+* DELETE `/comments/:cid`

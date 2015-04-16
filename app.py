@@ -89,9 +89,9 @@ if __name__ == "__main__":
             "tools.sessions.on": False,
         }
     }
-    cherrypy.tree.mount(Thread(), "/thread", conf)
-    cherrypy.tree.mount(Comment(), "/comment", conf)
-    cherrypy.tree.apps["/thread"].log.access_log.addFilter(PullThreadFilter())
+    cherrypy.tree.mount(Thread(), "/threads", conf)
+    cherrypy.tree.mount(Comment(), "/comments", conf)
+    cherrypy.tree.apps["/threads"].log.access_log.addFilter(PullThreadFilter())
 
     cherrypy.engine.subscribe("start", start)
     cherrypy.engine.subscribe("stop", stop)

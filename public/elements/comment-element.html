@@ -91,7 +91,7 @@
             deleteComment: function() {
                 var _this = this;
                 var xhr = this.$.xhr.request({
-                    url: "/comment/comment/" + this.cid,
+                    url: "/comment/comments/" + this.cid,
                     method: "DELETE",
                     callback: function() {
                         if (xhr.status == 200 && xhr.readyState == 4) {

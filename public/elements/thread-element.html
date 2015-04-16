@@ -64,7 +64,7 @@
             keyChanged: function() {
                 _this = this;
                 var xhr = this.$.xhr.request({
-                    url: "/comment/thread",
+                    url: "/comment/threads",
                     method: "POST",
                     headers: {"Content-type": "application/x-www-form-urlencoded"},
                     params: {"key": _this.key},
@@ -92,7 +92,7 @@
                     this.newPost = false;
                     this.lastPull = ts;
                     this.$.xhr.request({
-                        url: "/comment/thread/" + this.tid,
+                        url: "/comment/threads/" + this.tid,
                         method: "GET",
                         params: {"since": this.since},
                         callback: function(response) {
@@ -131,7 +131,7 @@
 
             flush: function() {
                 var xhr = _this.$.xhr.request({
-                    url: "/comment/comment",
+                    url: "/comment/comments",
                     method: "POST",
                     headers: {"Content-type": "application/json"},
                     body: JSON.stringify({
