@@ -19,7 +19,8 @@ class Thread(object):
             return self
 
     @cherrypy.tools.json_out()
-    def GET(self, tid, since=None):
+    def GET(self, key, since=None):
+        tid = redis_client.new_thread(key)
         comments = redis_client.load_thread(tid, since)
         return comments
 

@@ -81,7 +81,8 @@ def new_comment(comment):
     comment["cid"] = cid
     client.hset(COMMENTS_KEY, cid, json.dumps(comment))
     # Push new comment to thread queue
-    client.rpush(comment["tid"], cid)
+    tid = new_thread(comment["key"])
+    client.rpush(tid, cid)
 
 
 def delete_comment(cid):
